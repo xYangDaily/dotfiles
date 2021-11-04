@@ -1,0 +1,94 @@
+# If you come from bash you might have to change your $PATH.
+# export PATH=$HOME/bin:/usr/local/bin:$PATH
+
+# Path to your oh-my-zsh installation.
+# MACRO is seperated 
+
+#alias python='~/usr/bin/python2.7'
+alias ls='ls -a'
+
+# History in cache directory:
+HISTSIZE=10000
+SAVEHIST=10000
+HISTFILE=~/.cache/zsh/history
+
+bindkey -v
+export ZSH="/nfs/user/jiaxuyang/.oh-my-zsh"
+ZSH_THEME="xyang"
+plugins=( 
+  vi-mode
+  zsh-autosuggestions
+)
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=green"
+
+source $ZSH/oh-my-zsh.sh
+
+
+# VI OPTS
+VI_MODE_SET_CURSOR=true
+source /nfs/user/jiaxuyang/.config/zsh/zsh-easy-motion/easy_motion.plugin.zsh
+bindkey '^[j' vi-easy-trigger-e  # forward
+bindkey '^[k' vi-easy-trigger-ge # backward
+
+autoload -U backward-kill-word-match
+zle -N backward-kill-word-space backward-kill-word-match
+zstyle ':zle:backward-kill-word-space' word-style space
+bindkey '^y' backward-kill-word-space
+
+source /nfs/user/jiaxuyang/.config/zsh/zsh-history-substring-search/zsh-history-substring-search.zsh
+HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND="fg=cyan"
+
+HIST_OBJ_LOG=/nfs/user/jiaxuyang/.config/zsh/zsh-hist-obj/.obj #MACRO
+HIST_POS_LOG=/nfs/user/jiaxuyang/.config/zsh/zsh-hist-obj/.pos #MACRO
+touch $HIST_OBJ_LOG $HIST_POS_LOG
+source /nfs/user/jiaxuyang/.config/zsh/zsh-hist-obj/zsh-hist-obj.zsh
+bindkey '^n' history_object_widget
+
+#REFERENCES
+#compinit
+#_comp_options+=(globdots)
+#source /nfs/user/jiaxuyang/.config/.fzf/shell/key-bindings.zsh
+#source /nfs/user/jiaxuyang/.fzf/shell/fzf-tab/fzf-tab.plugin.zsh
+#source /nfs/user/jiaxuyang/.config/zsh/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+
+# MENU OPTS
+setopt noautomenu
+
+
+# LF OPTS
+LF_INSERT_POSI_LOG=/nfs/user/jiaxuyang/.config/lf/.quitpath #MACRO
+LF_CD_POSI_LOG=/nfs/user/jiaxuyang/.config/lf/.cdpath #MACRO
+GrabPath() { 
+  rm -f ${LF_INSERT_POSI_LOG} ${LF_CD_POSI_LOG}
+  lf 
+  if [ -f ${LF_INSERT_POSI_LOG} ];then
+    path_to_add=$(cat ${LF_INSERT_POSI_LOG})
+    rm -f ${LF_INSERT_POSI_LOG}; 
+    LBUFFER=${LBUFFER}${path_to_add} 
+  elif [ -f ${LF_CD_POSI_LOG} ]; then
+    path_to_cd=$(cat ${LF_CD_POSI_LOG})
+    cd $path_to_cd
+    zle reset-prompt
+  fi
+  rm -f ${LF_INSERT_POSI_LOG} ${LF_CD_POSI_LOG}
+} 
+zle -N GrabPath 
+bindkey '^o' GrabPath 
+
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/nfs/user/jiaxuyang/workspace/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/nfs/user/jiaxuyang/workspace/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/nfs/user/jiaxuyang/workspace/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/nfs/user/jiaxuyang/workspace/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+

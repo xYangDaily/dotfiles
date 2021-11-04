@@ -1,0 +1,51 @@
+# Basic Settings
+#set previewer ~/scripts/lf/preview
+#set preview true
+set hidden true
+set drawbox true
+#set icons true
+#set ignorecase true
+
+# Custom Functions
+cmd echoquit ${{
+  echo "`pwd`" >  /nfs/user/jiaxuyang/.config/lf/.quitpath
+  lf -remote "send $id quit"
+}}
+
+cmd cdquit ${{
+  echo "`pwd`" >  /nfs/user/jiaxuyang/.config/lf/.cdpath
+  lf -remote "send $id quit"
+}}
+  
+
+cmd open ${{
+  ls "$f"  > /nfs/user/jiaxuyang/.config/lf/.quitpath
+  lf -remote "send $id quit"
+}}
+
+
+cmd fzf_jump ${{
+    res="$(find . -maxdepth 3 | fzf --reverse --header='Jump to location' | sed 's/\\/\\\\/g;s/"/\\"/g')"
+    if [ -d "$res" ]; then
+        cmd="cd"
+    else 
+        cmd="select"                                                       
+    fi
+    lf -remote "send $id $cmd \"$res\""
+}}
+map <c-f> :fzf_jump
+# special cmd reserved by lf
+#cmd on-cd ${{
+#  cd "`pwd`"
+#}}
+
+
+# File Openers
+map ee $$EDITOR "$f"
+#map u $view "$f"
+
+map o echoquit
+map c cdquit
+map <enter> open
+
+
