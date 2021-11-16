@@ -1,3 +1,0 @@
-n:/nfs/user/jiaxuyang/haha
-n:/nfs/user/jiaxuyang/.zshrc
-n:/nfs/user/jiaxuyang/std_project/dotfiles
